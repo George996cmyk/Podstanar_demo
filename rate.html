@@ -1,0 +1,49 @@
+
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="UTF-8">
+    <title>Ocijeni stanara</title>
+    <style>
+        body { font-family: sans-serif; padding: 2rem; max-width: 600px; margin: auto; }
+        h2 { text-align: center; }
+        label { display: block; margin-top: 1rem; }
+        button { margin-top: 1rem; padding: 0.5rem 1rem; }
+    </style>
+</head>
+<body>
+    <h2>Ocijeni stanara</h2>
+    <label>
+        Token stanara:
+        <input type="text" id="tokenInput" placeholder="npr. USR-XXXXXXX">
+    </label>
+    <label>
+        <input type="radio" name="status" value="2"> ✅ Plaćeno na vrijeme
+    </label>
+    <label>
+        <input type="radio" name="status" value="1"> ⚠️ Kasni sa stanarinom
+    </label>
+    <label>
+        <input type="radio" name="status" value="0"> ❌ Ne plaća redovito
+    </label>
+    <button onclick="submitVote()">Pošalji</button>
+    <div id="result"></div>
+
+    <script>
+        function submitVote() {
+            const token = document.getElementById('tokenInput').value.trim();
+            const status = parseInt(document.querySelector('input[name=status]:checked')?.value);
+            if (!token || isNaN(status)) {
+                document.getElementById('result').innerText = "Molimo unesite token i odaberite status.";
+                return;
+            }
+
+            const key = 'votes_' + token;
+            const votes = JSON.parse(localStorage.getItem(key) || '[]');
+            votes.push(status);
+            localStorage.setItem(key, JSON.stringify(votes));
+            document.getElementById('result').innerText = "Ocjena je spremljena!";
+        }
+    </script>
+</body>
+</html>

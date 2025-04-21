@@ -1,0 +1,40 @@
+
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="UTF-8">
+    <title>Podstanar Reputacija</title>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+    <style>
+        body { font-family: sans-serif; padding: 2rem; max-width: 600px; margin: auto; }
+        .center { text-align: center; }
+        .status { margin-top: 1rem; padding: 1rem; border: 1px solid #ccc; border-radius: 8px; }
+        button { margin-top: 1rem; padding: 0.5rem 1rem; }
+    </style>
+</head>
+<body>
+    <h2 class="center">Token stanara</h2>
+    <div class="center">
+        <div id="tokenDisplay"></div>
+        <canvas id="qrcode"></canvas>
+        <div class="status">
+            <strong>Reputacija:</strong>
+            <div id="scoreStatus">Učitavam...</div>
+        </div>
+    </div>
+
+    <script>
+        const token = localStorage.getItem('tenant_token') || 'USR-' + Math.random().toString(36).substring(2, 10).toUpperCase();
+        localStorage.setItem('tenant_token', token);
+        document.getElementById('tokenDisplay').innerText = token;
+
+        QRCode.toCanvas(document.getElementById('qrcode'), token, { width: 200 });
+
+        const votes = JSON.parse(localStorage.getItem('votes_' + token) || '[]');
+        const score = votes.reduce((acc, v) => acc + v, 0);
+        document.getElementById('scoreStatus').innerText = `✅ Na vrijeme: ${votes.filter(v => v === 2).length}
+⚠️ Kasni: ${votes.filter(v => v === 1).length}
+❌ Ne plaća: ${votes.filter(v => v === 0).length}`;
+    </script>
+</body>
+</html>
